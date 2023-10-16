@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<math.h>
 
-int main(){
+main(){
     int vetor[10], vetorImpar[10];
 
 for (int i = 0; i < 10; i++){
