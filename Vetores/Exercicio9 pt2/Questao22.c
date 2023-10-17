@@ -1,7 +1,6 @@
 #include<stdio.h>
 #include<math.h>
 
-
 main(){
 
 int valor[10], valorb[10], valorc [10];
@@ -20,15 +19,14 @@ int valor[10], valorb[10], valorc [10];
 
     for(int i = 0; i < 10; i++){
 
-        if(valorc[i] %2 == 1;){
-
-            printf("\nImpares: %d" valorc[i]);
+        if(valorc[i] %2 == 1){
+            valorc[i] = valorb[i];
         }
 
-        if(valorc[i] %2 == 0;){
-
-            printf("\nPares: %d" valorc[i]);
+        if(valorc[i] %2 == 0){
+            valorc[i] = valor[i];
         }
+
+        printf("\nValores de C: %d", valorc[i]);
     }
-
 }  
