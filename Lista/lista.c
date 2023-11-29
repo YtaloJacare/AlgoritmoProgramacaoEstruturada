@@ -22,7 +22,6 @@ return NULL;
 
 Pessoa *criarNovaPessoa()
 {
-
     Pessoa *novaPessoa = (Pessoa *)malloc(sizeof(Pessoa));
 
     if (novaPessoa == NULL)
@@ -68,13 +67,106 @@ Pessoa *cadastrar(Pessoa *Lista)
     return Lista;
 }
 
+void mostrar(Pessoa *lista){
+
+Pessoa *atual = lista;
+
+if(atual == NULL){
+printf("Ninguem cadastrado");
+return;
+
+}else{
+    while(atual != NULL){
+        printf("\nNome: %s", atual->nome);
+        printf("ID: %d", atual->id);
+        printf("\nIdade: %d", atual->idade);
+        atual = atual ->prox;
+    }
+}
+
+}
+
+Pessoa* buscar(Pessoa *lista, int idBusca){
+
+Pessoa *atual = lista;
+if(atual == NULL){
+printf("Ninguem cadastrado");
+return;
+
+} else{
+    while(atual != NULL){
+        if(atual->id == idBusca){
+            printf("\nNome: %s", atual->nome);
+            printf("ID: %d", atual->id);
+            printf("\nIdade: %d", atual->idade);
+            return atual;
+        }
+        atual = atual->prox;
+
+    }
+    printf("Pessoa nao encontrad-a");
+    return NULL;
+    }
+
+}
+
+void alterar(Pessoa *encontrada){
+
+printf("\nAlterar nome: ");
+fgets(encontrada->nome, sizeof(encontrada->nome), stdin);
+while(getchar() != '\n');
+
+printf("\nAlterar a idade: ");
+scanf("%d", &encontrada->idade);
+while(getchar() != '\n');
+
+}
+
+Pessoa* excluir(Pessoa *lista, int idBusca){
+
+Pessoa *anterior = NULL;
+Pessoa *atual = lista;
+    while(atual != NULL && atual->id != idBusca){
+        anterior = atual;
+        atual = atual->prox;
+    }
+    if(atual != NULL){
+        if(anterior != NULL){
+            //exluir alguem depois do 1ª 
+            anterior->prox = atual->prox;
+        }else{
+            //excluir o 1ª
+            lista = atual->prox;
+        }
+        free(atual);
+        printf("Pessoa Exluida com sucesso!");
+    }else{
+        printf("Nao encontrada!");
+    }
+    return lista;
+}
+
+void liberarLista(Pessoa* lista){
+
+Pessoa *atual;
+Pessoa *proximaPessoa;
+
+while(atual != NULL){
+    proximaPessoa = atual->prox;
+    free(atual);
+    atual = proximaPessoa;
+}
+
+}
+
+
 main()
 {
 
     Pessoa *lista = criarListaVazia();
-
-    int opcao;
-
+    Pessoa *encontrada;
+    int opcao, idBusca;
+    
     printf("[-----Cadastro do Jaca-----]");
 
     do
@@ -91,27 +183,39 @@ main()
         switch (opcao)
         {
         case 1:
-
-            lista = cadastrar(lista);
+        lista = cadastrar(lista);
             
-            break;
+        break;
 
         case 2:
+        mostrar(lista);
 
-            break;
+        break;
 
         case 3:
+        printf("Digite o Id para buscar:");
+        scanf("%d", &idBusca);
+        encontrada = buscar(lista, idBusca);
 
-            break;
+        break;
 
         case 4:
-
-            break;
+        printf("\nDigite o Id para alterar:");
+        scanf("%d", &idBusca);
+        encontrada = buscar(lista, idBusca);
+        if(encontrada != NULL){
+            alterar(encontrada);
+        }
+        break;
 
         case 5:
-
-            break;
+        printf("\nDigite o Id para alterar:");
+        scanf("%d", &idBusca);
+        lista = excluir(lista, idBusca);
+        break;
         }
 
     } while (opcao != 0);
+
+    liberarLista(lista);
 }
