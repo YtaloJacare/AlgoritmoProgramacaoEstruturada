@@ -14,17 +14,8 @@ typedef struct Veiculo {
 
 } Veiculo;
 
-Veiculo* iniciador() {
-    Veiculo *novoVeic = (Veiculo*)malloc(sizeof(Veiculo));
-
-    if(novoVeic == NULL) {
-        printf("Nao ha memoria");
-        exit(EXIT_FAILURE);
-    } 
-
-    novoVeic->proximo = NULL;
-
-    return novoVeic;
+Veiculo* iniciar(){
+    return NULL;
 }
 
 Veiculo* adicionarVeiculo(Veiculo* lista) {
@@ -34,7 +25,7 @@ Veiculo* adicionarVeiculo(Veiculo* lista) {
     fgets(novoVeiculo->proprietario, sizeof(novoVeiculo->proprietario), stdin);
     fflush(stdin);
 
-    printf("Combustivel (alcool/diesel/gasolina): ");
+    printf("Combustivel [alcool-diesel-gasolina]: ");
     scanf("%s", &novoVeiculo->combustivel);
     fflush(stdin);
 
@@ -148,53 +139,58 @@ void listarModelo(Veiculo *lista) {
 
     if(tes == 0) {
 
-    printf("\nNao foi encontrado nenhum veiculo");
+    printf("\nNao foi encontrado nenhum veiculo com as especifacoes exigidas");
 
     }
 }
 
-void realizarTroca(Veiculo *lista, int chassi) {
-    Veiculo *atual = lista;
-    int tes = 0;
+Veiculo* mudarprop(Veiculo* lista, char* novoProprietario, char* chassi) {
+    Veiculo* atual = lista;
 
     while (atual != NULL) {
-        if(atual->chassi == chassi) {
-            char n1 = atual->placa[3];
-            char n2 = atual->placa[4];
-            char n3 = atual->placa[5];
-            char n4 = atual->placa[6];
-    
-            if(n1 != '0' && n2 != '0' & n3 != '0' & n4 != '0') {
-            printf("Digite o nome do novo proprietario: ");
-            scanf("%s", &atual->proprietario);
-            fflush(stdin);
-
-            } else {
-
-            printf("Veiculo em questao possui digito 0.");
-
+        if (strcmp(atual->chassi, chassi) == 0) {
+            int temZero = 0;
+            for (int i = 0; i < strlen(atual->placa); i++) {
+                if (atual->placa[i] == '0') {
+                    temZero = 1;
+                    break;
+                }
             }
 
-            tes++;
+            if (!temZero) {
+                strcpy(atual->proprietario, novoProprietario);
+                printf("\nProprietario trocado.");
+                return lista;
+            } else {
+                printf("\nTroca de proprietario nao permitida.");
+                return lista;
+            }
         }
-
         atual = atual->proximo;
     }
 
-    if(tes == 0) {
+    printf("\nVeiculo com chassi %s nao encontrado.\n", chassi);
+    return lista;
+}
 
-    printf("Nao foi encontrado nenhum veiculo");
-
+void liberarLista(Veiculo* lista) {
+    Veiculo* atual = lista;
+    while (atual != NULL) {
+        Veiculo* proximo = atual->proximo;
+        free(atual);
+        atual = proximo;
     }
 }
+
 
 
 int main(){
 
-    Veiculo* lista = NULL;
+    Veiculo* lista = iniciar();
     
     int opcao;
-    char novoProprietario[50], chassi[20];
+    char chassi[20];
+    char novoprop[20];
 
     printf("[-----Controle de Veiculos-----]");
 
@@ -223,16 +219,14 @@ int main(){
                 listarModelo(lista);
                 break;
             case 5:
-                printf("\nDigite o novo proprietario: ");
-                scanf("%s", novoProprietario);
 
+                printf("\nDigite o novo proprietario: ");
+                scanf("%s", novoprop);
                 printf("Digite o chassi do veiculo: ");
                 scanf("%s", chassi);
-                
-                realizarTroca(lista, chassi);
+                lista = mudarprop(lista, novoprop, chassi);
 
                 break;
-
             default:
 
             printf("\nOpcao invalida. Tente novamente:");
